@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kontrak;
 use Illuminate\Http\Request;
 
 class KontrakController extends Controller
@@ -11,15 +12,8 @@ class KontrakController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        // Mengambil semua data kontrak
+        return Kontrak::all();
     }
 
     /**
@@ -27,38 +21,54 @@ class KontrakController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validasi data yang dikirim dari form
+        $request->validate([
+            'tanggal_mulai' => 'required|date',
+            'tanggal_selesai' => 'required|date',
+        ]);
+
+        // Membuat data kontrak baru
+        $kontrak = Kontrak::create($request->all());
+
+        return response()->json($kontrak, 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        // Mengambil data kontrak berdasarkan ID
+        return Kontrak::findOrFail($id);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        // Validasi data yang dikirim dari form
+        $request->validate([
+            'tanggal_mulai' => 'required|date',
+            'tanggal_selesai' => 'required|date',
+        ]);
+
+        // Mengambil data kontrak berdasarkan ID
+        $kontrak = Kontrak::findOrFail($id);
+        // Mengupdate data kontrak
+        $kontrak->update($request->all());
+
+        return response()->json($kontrak, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        // Mengambil data kontrak berdasarkan ID dan menghapusnya
+        Kontrak::findOrFail($id)->delete();
+
+        return response()->json(null, 204);
     }
 }

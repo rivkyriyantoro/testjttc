@@ -14,11 +14,19 @@ return new class extends Migration
         Schema::create('pegawais', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
+            $table->string('alamat');
+            $table->date('tanggal_lahir');
+            $table->string('no_telepon');
+            $table->string('email')->unique();
             $table->unsignedBigInteger('jabatan_id');
             $table->unsignedBigInteger('kontrak_id');
             $table->timestamps();
+
+            $table->foreign('jabatan_id')->references('id')->on('jabatan_pegawais')->onDelete('cascade');
+            $table->foreign('kontrak_id')->references('id')->on('kontraks')->onDelete('cascade');
         });
     }
+
 
 
     /**

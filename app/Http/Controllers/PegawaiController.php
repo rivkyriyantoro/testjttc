@@ -11,39 +11,30 @@ class PegawaiController extends Controller
 {
     public function index()
     {
-        $pegawais = Pegawai::with(['jabatan', 'kontrak'])->get();
-        return view('pegawais.index', compact('pegawais'));
-    }
-
-    public function create()
-    {
-        $jabatans = JabatanPegawai::all();
-        $kontraks = Kontrak::all();
-        return view('pegawais.create', compact('jabatans', 'kontraks'));
+        return Pegawai::with('jabatan', 'kontrak')->get();
     }
 
     public function store(Request $request)
     {
-        Pegawai::create($request->all());
-        return redirect()->route('pegawais.index');
+        $pegawai = Pegawai::create($request->all());
+        return response()->json($pegawai, 201);
     }
 
-    public function edit(Pegawai $pegawai)
+    public function show($id)
     {
-        $jabatans = JabatanPegawai::all();
-        $kontraks = Kontrak::all();
-        return view('pegawais.edit', compact('pegawai', 'jabatans', 'kontraks'));
+        return Pegawai::with('jabatan', 'kontrak')->findOrFail($id);
     }
 
-    public function update(Request $request, Pegawai $pegawai)
+    public function update(Request $request, $id)
     {
+        $pegawai = Pegawai::findOrFail($id);
         $pegawai->update($request->all());
-        return redirect()->route('pegawais.index');
+        return response()->json($pegawai, 200);
     }
 
-    public function destroy(Pegawai $pegawai)
+    public function destroy($id)
     {
-        $pegawai->delete();
-        return redirect()->route('pegawais.index');
+        Pegawai::findOrFail($id)->delete();
+        return response()->json(null, 204);
     }
 }
